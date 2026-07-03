@@ -14,37 +14,37 @@
       "minLength": 2,
       "maxLength": 8,
       "metadata": {
-        "description": "Project name. Required. Use 2 to 8 characters. This value is used in Azure resource names and the Windows computer name."
+        "description": "The project name, which is used in Azure resource names and the Windows computer name."
       }
     },
     "adminUsername": {
       "type": "string",
       "metadata": {
-        "description": "Username. Required. Local administrator username for the Windows Server VM."
+        "description": "Username for the Windows Server VM."
       }
     },
     "adminPassword": {
       "type": "securestring",
       "metadata": {
-        "description": "Password. Required. Local administrator password for the Windows Server VM and the Active Directory DSRM password. Use a strong password."
+        "description": "Password for the Windows Server VM and the Active Directory DSRM password."
       }
     },
     "sourceIpAddress": {
       "type": "string",
       "metadata": {
-        "description": "Public IP address. Required. Public IPv4 address that is allowed to connect with RDP. Enter only the IP address, without /32."
+        "description": "Public IPv4 address that is allowed to connect with RDP. Enter only the IP address, without prefixes (like /32)."
       }
     },
     "vmSize": {
       "type": "string",
       "metadata": {
-        "description": "Server size. Required. Enter an Azure VM size, for example Standard_D2as_v5 or Standard_D2as_v7."
+        "description": "Enter an Azure VM size, for example Standard_D2as_v5 or Standard_D2as_v7."
       }
     },
     "domainName": {
       "type": "string",
       "metadata": {
-        "description": "Active Directory domain name. Required. Example: contoso.local or ad.contoso.com."
+        "description": "Active Directory domain name. Example: contoso.local or ad.contoso.com."
       }
     },
     "domainNetbiosName": {
@@ -52,14 +52,14 @@
       "minLength": 1,
       "maxLength": 15,
       "metadata": {
-        "description": "NETBIOS name. Required. Active Directory NetBIOS name. Use 1 to 15 characters."
+        "description": "Active Directory NetBIOS name. Use 1 to 15 characters."
       }
     },
     "tags": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Tags. Optional. Add Azure resource tags as a JSON object. Leave empty if no tags are needed."
+        "description": "Add Azure resource tags as a JSON object. Leave blank if no tags are needed."
       }
     }
   },
