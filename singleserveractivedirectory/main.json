@@ -58,7 +58,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue":,
+      "defaultValue": {},
       "metadata": {
         "description": "Add Azure resource tags as a JSON object. Leave blank if no tags are needed."
       }
