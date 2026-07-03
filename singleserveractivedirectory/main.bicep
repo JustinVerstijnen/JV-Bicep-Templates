@@ -5,8 +5,7 @@ targetScope = 'resourceGroup'
 @maxLength(8)
 param projectName string
 
-@description('Azure region where the resources will be deployed. By default, the resource group location is used.')
-param location string = resourceGroup().location
+var location = resourceGroup().location
 
 @description('Username. Required. Local administrator username for the Windows Server VM.')
 param adminUsername string
@@ -21,14 +20,11 @@ param sourceIpAddress string
 @description('Server size. Required. Enter an Azure VM size, for example Standard_D2as_v5 or Standard_D2as_v7.')
 param vmSize string
 
-@description('Virtual network address space.')
-param vnetAddressPrefix string = '10.69.0.0/16'
+var vnetAddressPrefix = '10.69.0.0/16'
 
-@description('Subnet address space.')
-param subnetPrefix string = '10.69.0.0/24'
+var subnetPrefix = '10.69.0.0/24'
 
-@description('Static private IP address for the domain controller.')
-param vmPrivateIpAddress string = '10.69.0.4'
+var vmPrivateIpAddress = '10.69.0.4'
 
 @description('Active Directory domain name. Required. Example: contoso.local or ad.contoso.com.')
 param domainName string
@@ -38,11 +34,8 @@ param domainName string
 @maxLength(15)
 param domainNetbiosName string
 
-@description('Tags applied to all supported resources.')
-param tags object = {
-  deployment: 'bicep'
-  workload: 'single-server-ad-lab'
-}
+@description('Tags. Optional. Add Azure resource tags as a JSON object. Leave empty if no tags are needed.')
+param tags object = {}
 
 var lowerProjectName = toLower(projectName)
 var namePrefix = 'jv-${lowerProjectName}'
