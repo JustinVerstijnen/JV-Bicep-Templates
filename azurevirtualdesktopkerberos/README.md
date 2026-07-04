@@ -106,3 +106,9 @@ After committing this folder to `main` in `JustinVerstijnen/JV-Azure-Deployment-
 ```text
 https://raw.githubusercontent.com/JustinVerstijnen/JV-Azure-Deployment-Templates/refs/heads/main/azurevirtualdesktopkerberos/main.json
 ```
+
+## Fix notes
+
+- The AVD registration token is retrieved with `listRegistrationTokens()` instead of `reference(...).registrationInfo.token`.
+- This is required because `registrationInfo` is not returned on GET/reference for newer Azure Virtual Desktop host pool API versions.
+- If `AADLoginForWindows` fails with hostname `0x801c0083`, remove the old Entra/Intune device object or deploy with a new `sessionHostNamePrefix`.
