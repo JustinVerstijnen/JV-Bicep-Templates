@@ -18,9 +18,9 @@ const tools = [
   {
     title: "Azure Virtual Desktop Kerberos",
     description: "Deploy a single session host with all Azure Virtual Desktop dependencies",
-    toolUrl: "",
+    toolUrl: "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJustinVerstijnen%2FJV-Azure-Deployment-Templates%2Frefs%2Fheads%2Fmain%2Fazurevirtualdesktopkerberos%2Fmain.json",
     shortcut: "",
-    github: "",
+    github: "https://github.com/JustinVerstijnen/JV-Azure-Deployment-Templates/tree/main/azurevirtualdesktopkerberos",
     image: ""
   }
 ];
