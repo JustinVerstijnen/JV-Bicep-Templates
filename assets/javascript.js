@@ -21,7 +21,7 @@ const tools = [
     toolUrl: "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJustinVerstijnen%2FJV-Azure-Deployment-Templates%2Frefs%2Fheads%2Fmain%2Fazurevirtualdesktopkerberos%2Fmain.json",
     shortcut: "",
     github: "https://github.com/JustinVerstijnen/JV-Azure-Deployment-Templates/tree/main/azurevirtualdesktopkerberos",
-    image: ""
+    image: "https://raw.githubusercontent.com/JustinVerstijnen/AzureDeploymentTemplates/7f73a88839e41dd09a02dce073b37902bd376140/azurevirtualdesktopkerberos/azurevirtualdesktopkerberos.png"
   }
 ];
 
