@@ -37,3 +37,6 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview'
 output hostPoolName string = hostPool.name
 output hostPoolId string = hostPool.id
 output hostPoolRdpProperties string = hostPool.properties.customRdpProperty
+
+@secure()
+output registrationInfoToken string = hostPool.properties.registrationInfo.token

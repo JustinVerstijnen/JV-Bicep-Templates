@@ -257,6 +257,8 @@ resource fslogixShare 'Microsoft.Storage/storageAccounts/fileServices/shares@202
   }
 }
 
+// The host pool is created in a nested module so the registration-token expiration can stay hidden from the Azure Portal wizard.
+// Downstream resources use module outputs to avoid host pool ResourceNotFound timing/reference issues.
 module hostPool 'hostpool.bicep' = {
   name: 'deploy-${projectClean}-hostpool'
   params: {
@@ -424,7 +426,7 @@ resource avdRegistrationExtension 'Microsoft.Compute/virtualMachines/extensions@
     }
     protectedSettings: {
       properties: {
-        registrationInfoToken: reference(hostPool.outputs.hostPoolId, '2024-04-08-preview').registrationInfo.token
+        registrationInfoToken: hostPool.outputs.registrationInfoToken
       }
     }
   }

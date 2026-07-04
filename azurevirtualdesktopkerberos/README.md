@@ -59,6 +59,11 @@ The following deployment values are intentionally fixed inside the template inst
 - Image SKU: `win11-25h2-avd`
 - Image version: `latest`
 
+
+## Deployment fix note
+
+The host pool is deployed through a nested deployment so the registration-token expiration stays hidden from the Azure Portal wizard. Downstream resources now consume the host pool through nested deployment outputs. This avoids `Microsoft.DesktopVirtualization/hostpools/<name> was not found` errors where the Desktop Application Group or DSC extension tried to reference the host pool too early.
+
 ## Required parameters
 
 - `projectName`
