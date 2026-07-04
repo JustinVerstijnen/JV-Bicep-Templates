@@ -137,3 +137,9 @@ This means `registrationTokenExpirationTime` is visible in the Azure Portal wiza
 `enrollSessionHostsInIntune` now defaults to `false`.
 
 This avoids a common deployment failure where Intune/Defender/WDAC/ASR policies apply before the Azure Virtual Desktop agent is installed by the DSC extension. If you want Intune enrollment during deployment, set this parameter to `true` only after confirming your enrollment restrictions and endpoint security policies allow MSI/process execution from the Azure VM extension/DSC plugin path.
+
+## Intune expression fix
+
+`enrollSessionHostsInIntune` defaults to `true` again for cloud-only deployments.
+
+The DSC extension settings were changed back to a normal JSON object instead of a single `createObject()` expression. This avoids ARM parser issues with boolean literals in functions and keeps the deployment wizard simple.

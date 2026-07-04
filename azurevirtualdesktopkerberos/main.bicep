@@ -68,8 +68,8 @@ param sessionHostNamePrefix string = 'vm-jv-avd'
 @description('Azure VM size for the AVD session host VMs.')
 param sessionHostVmSize string = 'Standard_E4as_v7'
 
-@description('Optional. Enroll session hosts in Intune during deployment. Default is false to avoid Intune/Defender policies blocking the AVD agent DSC installation. Set to true only when enrollment restrictions and security policies are known to allow this.')
-param enrollSessionHostsInIntune bool = false
+@description('Enroll session hosts in Intune during deployment. For cloud-only deployments this should normally stay true. Tenant-side automatic MDM enrollment scope and Intune policies must allow these devices/users.')
+param enrollSessionHostsInIntune bool = true
 
 @description('Microsoft AVD DSC configuration package used to register session hosts to the host pool.')
 param avdDscConfigurationZipUrl string = 'https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip'

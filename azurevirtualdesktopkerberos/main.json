@@ -7,7 +7,8 @@
     "secureOutputFix": "The DSC extension retrieves the AVD registration token directly with listRegistrationTokens() inside protectedSettings. The token is not passed through a nested secureString output.",
     "defaultObjectIds": "Default Object IDs added for AVD desktop access group, AVD admins group, AVD service principal, and optional AVD computer group.",
     "stableFlatHostPoolFix": "Host pool is deployed as a normal top-level ARM resource. Nested host pool deployment removed to avoid ResourceNotFound/race issues when application group or DSC extension references the host pool.",
-    "intuneDefaultFix": "enrollSessionHostsInIntune default changed to false to prevent Intune/Defender/WDAC/ASR policies from applying before the AVD agent DSC installation completes. Set it to true only after confirming deployment policies do not block MSI execution from the Azure DSC plugin path."
+    "intuneDefaultFix": "enrollSessionHostsInIntune default changed to false to prevent Intune/Defender/WDAC/ASR policies from applying before the AVD agent DSC installation completes. Set it to true only after confirming deployment policies do not block MSI execution from the Azure DSC plugin path.",
+    "intuneExpressionFix": "enrollSessionHostsInIntune default restored to true for cloud-only deployments. DSC settings.properties is restored to a normal JSON object to avoid ARM parser issues with boolean literals in createObject()."
   },
   "parameters": {
     "projectName": {
@@ -140,9 +141,9 @@
     "enrollSessionHostsInIntune": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Enroll session hosts in Intune during deployment. Default is false to avoid Intune/Defender policies blocking the AVD agent DSC installation. Set to true only when enrollment restrictions and security policies are known to allow this."
+        "description": "Enroll session hosts in Intune during deployment. For cloud-only deployments this should normally stay true. Tenant-side automatic MDM enrollment scope and Intune policies must allow these devices/users."
       },
-      "defaultValue": false
+      "defaultValue": true
     },
     "avdDscConfigurationZipUrl": {
       "type": "string",
@@ -520,7 +521,13 @@
         "settings": {
           "modulesUrl": "[parameters('avdDscConfigurationZipUrl')]",
           "configurationFunction": "Configuration.ps1\\AddSessionHost",
-          "properties": "[if(parameters('enrollSessionHostsInIntune'), createObject('hostPoolName', variables('hostPoolName'), 'aadJoin', true, 'mdmId', variables('intuneMdmApplicationId'), 'UseAgentDownloadEndpoint', true, 'sessionHostConfigurationLastUpdateTime', ''), createObject('hostPoolName', variables('hostPoolName'), 'aadJoin', true, 'UseAgentDownloadEndpoint', true, 'sessionHostConfigurationLastUpdateTime', ''))]"
+          "properties": {
+            "hostPoolName": "[variables('hostPoolName')]",
+            "aadJoin": true,
+            "mdmId": "[if(parameters('enrollSessionHostsInIntune'), variables('intuneMdmApplicationId'), '')]",
+            "UseAgentDownloadEndpoint": true,
+            "sessionHostConfigurationLastUpdateTime": ""
+          }
         },
         "protectedSettings": {
           "properties": {
