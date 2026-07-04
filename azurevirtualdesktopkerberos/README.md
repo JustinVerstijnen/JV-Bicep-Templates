@@ -5,6 +5,7 @@ This folder contains the Bicep and ARM version of the old Terraform Azure Virtua
 ## Files
 
 - `main.bicep` - readable Bicep source.
+- `hostpool.bicep` - nested host pool module used to keep the registration token expiration hidden from the main Azure Portal wizard while preserving the dynamic deployment-time default.
 - `main.json` - ARM template for Azure Portal deployment.
 - `deploy.html` - Deploy to Azure button using the same structure as the existing Deployment Templates repo.
 
@@ -37,6 +38,26 @@ rg-jv-<project>
 ```
 
 The template also outputs `expectedTerraformResourceGroupName` after deployment.
+
+
+## Simplified Azure Portal wizard
+
+The following deployment values are intentionally fixed inside the template instead of exposed as Azure Portal wizard fields:
+
+- Virtual network address space: `10.69.0.0/16`
+- AVD subnet address prefix: `10.69.0.0/24`
+- Storage IP rules: none
+- Storage network bypass: `AzureServices`
+- Storage replication type: `LRS`
+- File share soft delete retention: `7` days
+- FSLogix share quota: `5120` GiB
+- FSLogix share access tier: `TransactionOptimized`
+- Registration token expiration: 27 days from deployment time
+- OS disk size: `128` GiB
+- Image publisher: `MicrosoftWindowsDesktop`
+- Image offer: `windows-11`
+- Image SKU: `win11-25h2-avd`
+- Image version: `latest`
 
 ## Required parameters
 

@@ -26,53 +26,6 @@ param avdServicePrincipalObjectId string = ''
 @description('Object ID. Optional. Existing Entra ID computer/device group for AVD session hosts. This template only returns the value for policy targeting; it does not create or populate the group.')
 param avdComputerGroupObjectId string = ''
 
-@description('Virtual network address space.')
-param vnetAddressSpace array = [
-  '10.69.0.0/16'
-]
-
-@description('AVD subnet address prefixes.')
-param subnetAddressPrefixes array = [
-  '10.69.0.0/24'
-]
-
-@description('Public IPv4 addresses or supported CIDR ranges allowed through the Storage Account firewall. For one public IP, use the IP without /32.')
-param storageIpRules array = []
-
-@description('Storage firewall bypass rules. Use [\'None\'] for strict mode or [\'AzureServices\'] to allow trusted Azure services.')
-param storageNetworkBypass array = [
-  'AzureServices'
-]
-
-@description('Storage account replication type.')
-@allowed([
-  'LRS'
-  'GRS'
-  'RAGRS'
-  'ZRS'
-  'GZRS'
-  'RAGZRS'
-])
-param storageReplicationType string = 'LRS'
-
-@description('Retention period in days for soft-deleted file shares.')
-@minValue(1)
-@maxValue(365)
-param fileShareSoftDeleteRetentionDays int = 7
-
-@description('Quota in GiB for the fslogix-profiles Azure Files share.')
-@minValue(1)
-@maxValue(102400)
-param fslogixShareQuotaGb int = 5120
-
-@description('Access tier for the fslogix-profiles Azure Files share. Standard shares support Hot, Cool and TransactionOptimized.')
-@allowed([
-  'Hot'
-  'Cool'
-  'TransactionOptimized'
-])
-param fslogixShareAccessTier string = 'TransactionOptimized'
-
 @description('Friendly name shown for the AVD Workspace.')
 param workspaceFriendlyName string = 'JV Azure Virtual Desktop Workspace'
 
@@ -99,9 +52,6 @@ param hostPoolLoadBalancerType string = 'BreadthFirst'
 @minValue(1)
 param hostPoolMaximumSessionsAllowed int = 8
 
-@description('AVD host pool registration token expiration time. The default is 27 days from deployment time.')
-param registrationTokenExpirationTime string = dateTimeAdd(utcNow(), 'P27D')
-
 @description('Number of AVD session hosts to deploy.')
 @minValue(1)
 @maxValue(10)
@@ -114,22 +64,6 @@ param sessionHostNamePrefix string = 'vm-jv-avd'
 
 @description('Azure VM size for the AVD session host VMs.')
 param sessionHostVmSize string = 'Standard_E4as_v7'
-
-@description('OS disk size in GiB for the AVD session host VMs.')
-@minValue(64)
-param osDiskSizeGb int = 128
-
-@description('Azure Marketplace image publisher.')
-param imagePublisher string = 'MicrosoftWindowsDesktop'
-
-@description('Azure Marketplace image offer.')
-param imageOffer string = 'windows-11'
-
-@description('Azure Marketplace image SKU. Default is Windows 11 Enterprise multi-session 25H2 for AVD. Use win11-24h2-avd if 25H2 is not available in your region/subscription.')
-param imageSku string = 'win11-25h2-avd'
-
-@description('Azure Marketplace image version.')
-param imageVersion string = 'latest'
 
 @description('Pass the Microsoft Intune MDM application ID to the AVD/AADLogin extensions. Tenant-side automatic MDM enrollment scope must also allow these devices/users.')
 param enrollSessionHostsInIntune bool = true
@@ -180,6 +114,28 @@ var virtualMachineUserLoginRoleId = 'fb879df8-f326-4884-b1cf-06f3ad86be52'
 var virtualMachineAdministratorLoginRoleId = '1c0163c0-47e6-4577-8991-ea5c82e286e4'
 var storageFileDataSmbShareContributorRoleId = '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
 var storageFileDataPrivilegedContributorRoleId = '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+
+
+// Fixed deployment defaults. These values are intentionally not exposed as Azure portal wizard fields.
+var vnetAddressSpace = [
+  '10.69.0.0/16'
+]
+var subnetAddressPrefixes = [
+  '10.69.0.0/24'
+]
+var storageIpRules = []
+var storageNetworkBypass = [
+  'AzureServices'
+]
+var storageReplicationType = 'LRS'
+var fileShareSoftDeleteRetentionDays = 7
+var fslogixShareQuotaGb = 5120
+var fslogixShareAccessTier = 'TransactionOptimized'
+var osDiskSizeGb = 128
+var imagePublisher = 'MicrosoftWindowsDesktop'
+var imageOffer = 'windows-11'
+var imageSku = 'win11-25h2-avd'
+var imageVersion = 'latest'
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2024-01-01' = {
   name: nsgName
@@ -301,26 +257,16 @@ resource fslogixShare 'Microsoft.Storage/storageAccounts/fileServices/shares@202
   }
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview' = {
-  name: hostPoolName
-  location: location
-  tags: tags
-  properties: {
-    hostPoolType: 'Pooled'
-    loadBalancerType: hostPoolLoadBalancerType
-    maxSessionLimit: hostPoolMaximumSessionsAllowed
-    startVMOnConnect: true
-    validationEnvironment: false
-    preferredAppGroupType: 'Desktop'
-    publicNetworkAccess: 'Enabled'
-    managementType: 'Standard'
-    friendlyName: hostPoolName
-    description: hostPoolDescription
-    customRdpProperty: entraSsoRdpProperties
-    registrationInfo: {
-      expirationTime: registrationTokenExpirationTime
-      registrationTokenOperation: 'Update'
-    }
+module hostPool 'hostpool.bicep' = {
+  name: 'deploy-${projectClean}-hostpool'
+  params: {
+    hostPoolName: hostPoolName
+    location: location
+    tags: tags
+    hostPoolLoadBalancerType: hostPoolLoadBalancerType
+    hostPoolMaximumSessionsAllowed: hostPoolMaximumSessionsAllowed
+    hostPoolDescription: hostPoolDescription
+    entraSsoRdpProperties: entraSsoRdpProperties
   }
 }
 
@@ -330,7 +276,7 @@ resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@202
   tags: tags
   properties: {
     applicationGroupType: 'Desktop'
-    hostPoolArmPath: hostPool.id
+    hostPoolArmPath: hostPool.outputs.hostPoolId
     friendlyName: applicationGroupName
     description: applicationGroupDescription
     defaultDesktopDisplayName: defaultDesktopDisplayName
@@ -469,7 +415,7 @@ resource avdRegistrationExtension 'Microsoft.Compute/virtualMachines/extensions@
       modulesUrl: avdDscConfigurationZipUrl
       configurationFunction: 'Configuration.ps1\\AddSessionHost'
       properties: {
-        hostPoolName: hostPool.name
+        hostPoolName: hostPool.outputs.hostPoolName
         aadJoin: true
         mdmId: enrollSessionHostsInIntune ? intuneMdmApplicationId : ''
         UseAgentDownloadEndpoint: true
@@ -478,7 +424,7 @@ resource avdRegistrationExtension 'Microsoft.Compute/virtualMachines/extensions@
     }
     protectedSettings: {
       properties: {
-        registrationInfoToken: reference(hostPool.id).registrationInfo.token
+        registrationInfoToken: reference(hostPool.outputs.hostPoolId, '2024-04-08-preview').registrationInfo.token
       }
     }
   }
@@ -564,11 +510,11 @@ output subnetResourceName string = subnetName
 output storageAccountResourceName string = storageAccount.name
 output fslogixProfilesShareName string = fslogixShare.name
 output fslogixProfilesUncPath string = '\\\\${storageAccount.name}.file.core.windows.net\\${fslogixShare.name}'
-output hostPoolResourceName string = hostPool.name
+output hostPoolResourceName string = hostPool.outputs.hostPoolName
 output applicationGroupResourceName string = applicationGroup.name
 output workspaceResourceName string = workspace.name
 output sessionHostNameList array = sessionHostNames
-output hostPoolRdpProperties string = hostPool.properties.customRdpProperty
+output hostPoolRdpProperties string = hostPool.outputs.hostPoolRdpProperties
 output avdComputerGroupObjectIdValue string = avdComputerGroupObjectId
 output avdServicePrincipalClientIdValue string = avdServicePrincipalClientId
 output postDeploymentNote string = 'Deploy this template into the resource group you want to use. To match the original Terraform naming exactly, create/select resource group rg-jv-${projectClean} before deploying.'

@@ -51,85 +51,6 @@
       },
       "defaultValue": ""
     },
-    "vnetAddressSpace": {
-      "type": "array",
-      "metadata": {
-        "description": "Virtual network address space."
-      },
-      "defaultValue": [
-        "10.69.0.0/16"
-      ]
-    },
-    "subnetAddressPrefixes": {
-      "type": "array",
-      "metadata": {
-        "description": "AVD subnet address prefixes."
-      },
-      "defaultValue": [
-        "10.69.0.0/24"
-      ]
-    },
-    "storageIpRules": {
-      "type": "array",
-      "metadata": {
-        "description": "Public IPv4 addresses or supported CIDR ranges allowed through the Storage Account firewall. For one public IP, use the IP without /32."
-      },
-      "defaultValue": []
-    },
-    "storageNetworkBypass": {
-      "type": "array",
-      "metadata": {
-        "description": "Storage firewall bypass rules. Use ['None'] for strict mode or ['AzureServices'] to allow trusted Azure services."
-      },
-      "defaultValue": [
-        "AzureServices"
-      ]
-    },
-    "storageReplicationType": {
-      "type": "string",
-      "metadata": {
-        "description": "Storage account replication type."
-      },
-      "defaultValue": "LRS",
-      "allowedValues": [
-        "LRS",
-        "GRS",
-        "RAGRS",
-        "ZRS",
-        "GZRS",
-        "RAGZRS"
-      ]
-    },
-    "fileShareSoftDeleteRetentionDays": {
-      "type": "int",
-      "metadata": {
-        "description": "Retention period in days for soft-deleted file shares."
-      },
-      "defaultValue": 7,
-      "minValue": 1,
-      "maxValue": 365
-    },
-    "fslogixShareQuotaGb": {
-      "type": "int",
-      "metadata": {
-        "description": "Quota in GiB for the fslogix-profiles Azure Files share."
-      },
-      "defaultValue": 5120,
-      "minValue": 1,
-      "maxValue": 102400
-    },
-    "fslogixShareAccessTier": {
-      "type": "string",
-      "metadata": {
-        "description": "Access tier for the fslogix-profiles Azure Files share. Standard shares support Hot, Cool and TransactionOptimized."
-      },
-      "defaultValue": "TransactionOptimized",
-      "allowedValues": [
-        "Hot",
-        "Cool",
-        "TransactionOptimized"
-      ]
-    },
     "workspaceFriendlyName": {
       "type": "string",
       "metadata": {
@@ -184,13 +105,6 @@
       "defaultValue": 8,
       "minValue": 1
     },
-    "registrationTokenExpirationTime": {
-      "type": "string",
-      "metadata": {
-        "description": "AVD host pool registration token expiration time. The default is 27 days from deployment time."
-      },
-      "defaultValue": "[dateTimeAdd(utcNow(), 'P27D')]"
-    },
     "sessionHostCount": {
       "type": "int",
       "metadata": {
@@ -215,42 +129,6 @@
         "description": "Azure VM size for the AVD session host VMs."
       },
       "defaultValue": "Standard_E4as_v7"
-    },
-    "osDiskSizeGb": {
-      "type": "int",
-      "metadata": {
-        "description": "OS disk size in GiB for the AVD session host VMs."
-      },
-      "defaultValue": 128,
-      "minValue": 64
-    },
-    "imagePublisher": {
-      "type": "string",
-      "metadata": {
-        "description": "Azure Marketplace image publisher."
-      },
-      "defaultValue": "MicrosoftWindowsDesktop"
-    },
-    "imageOffer": {
-      "type": "string",
-      "metadata": {
-        "description": "Azure Marketplace image offer."
-      },
-      "defaultValue": "windows-11"
-    },
-    "imageSku": {
-      "type": "string",
-      "metadata": {
-        "description": "Azure Marketplace image SKU. Default is Windows 11 Enterprise multi-session 25H2 for AVD. Use win11-24h2-avd if 25H2 is not available in your region/subscription."
-      },
-      "defaultValue": "win11-25h2-avd"
-    },
-    "imageVersion": {
-      "type": "string",
-      "metadata": {
-        "description": "Azure Marketplace image version."
-      },
-      "defaultValue": "latest"
     },
     "enrollSessionHostsInIntune": {
       "type": "bool",
@@ -278,6 +156,26 @@
     "location": "[resourceGroup().location]",
     "projectClean": "[toLower(parameters('projectName'))]",
     "projectStorage": "[toLower(replace(parameters('projectName'), '-', ''))]",
+    "vnetAddressSpace": [
+      "10.69.0.0/16"
+    ],
+    "subnetAddressPrefixes": [
+      "10.69.0.0/24"
+    ],
+    "storageIpRules": [],
+    "storageNetworkBypass": [
+      "AzureServices"
+    ],
+    "storageReplicationType": "LRS",
+    "fileShareSoftDeleteRetentionDays": 7,
+    "fslogixShareQuotaGb": 5120,
+    "fslogixShareAccessTier": "TransactionOptimized",
+    "osDiskSizeGb": 128,
+    "imagePublisher": "MicrosoftWindowsDesktop",
+    "imageOffer": "windows-11",
+    "imageSku": "win11-25h2-avd",
+    "imageVersion": "latest",
+    "hostPoolDeploymentName": "[format('deploy-{0}-hostpool', variables('projectClean'))]",
     "vnetName": "[format('vnet-jv-{0}', variables('projectClean'))]",
     "subnetName": "[format('snet-jv-{0}', variables('projectClean'))]",
     "nsgName": "[format('nsg-jv-avd-{0}', variables('projectClean'))]",
@@ -300,16 +198,9 @@
         "name": "sessionHostNames",
         "count": "[parameters('sessionHostCount')]",
         "input": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), copyIndex('sessionHostNames'))]"
-      },
-      {
-        "name": "storageIpRuleObjects",
-        "count": "[length(parameters('storageIpRules'))]",
-        "input": {
-          "action": "Allow",
-          "value": "[parameters('storageIpRules')[copyIndex('storageIpRuleObjects')]]"
-        }
       }
-    ]
+    ],
+    "storageIpRuleObjects": []
   },
   "resources": [
     {
@@ -330,13 +221,13 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": "[parameters('vnetAddressSpace')]"
+          "addressPrefixes": "[variables('vnetAddressSpace')]"
         },
         "subnets": [
           {
             "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefixes": "[parameters('subnetAddressPrefixes')]",
+              "addressPrefixes": "[variables('subnetAddressPrefixes')]",
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
               },
@@ -360,7 +251,7 @@
       "location": "[variables('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "name": "[format('Standard_{0}', parameters('storageReplicationType'))]"
+        "name": "[format('Standard_{0}', variables('storageReplicationType'))]"
       },
       "kind": "StorageV2",
       "properties": {
@@ -392,7 +283,7 @@
         },
         "networkAcls": {
           "defaultAction": "Deny",
-          "bypass": "[join(parameters('storageNetworkBypass'), ',')]",
+          "bypass": "[join(variables('storageNetworkBypass'), ',')]",
           "ipRules": "[variables('storageIpRuleObjects')]",
           "virtualNetworkRules": [
             {
@@ -413,7 +304,7 @@
       "properties": {
         "shareDeleteRetentionPolicy": {
           "enabled": true,
-          "days": "[parameters('fileShareSoftDeleteRetentionDays')]"
+          "days": "[variables('fileShareSoftDeleteRetentionDays')]"
         },
         "protocolSettings": {
           "smb": {
@@ -434,34 +325,104 @@
       "name": "[format('{0}/default/{1}', variables('storageAccountName'), variables('fslogixShareName'))]",
       "properties": {
         "enabledProtocols": "SMB",
-        "shareQuota": "[parameters('fslogixShareQuotaGb')]",
-        "accessTier": "[parameters('fslogixShareAccessTier')]"
+        "shareQuota": "[variables('fslogixShareQuotaGb')]",
+        "accessTier": "[variables('fslogixShareAccessTier')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]"
       ]
     },
     {
-      "type": "Microsoft.DesktopVirtualization/hostPools",
-      "apiVersion": "2024-04-08-preview",
-      "name": "[variables('hostPoolName')]",
-      "location": "[variables('location')]",
-      "tags": "[parameters('tags')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('hostPoolDeploymentName')]",
       "properties": {
-        "hostPoolType": "Pooled",
-        "loadBalancerType": "[parameters('hostPoolLoadBalancerType')]",
-        "maxSessionLimit": "[parameters('hostPoolMaximumSessionsAllowed')]",
-        "startVMOnConnect": true,
-        "validationEnvironment": false,
-        "preferredAppGroupType": "Desktop",
-        "publicNetworkAccess": "Enabled",
-        "managementType": "Standard",
-        "friendlyName": "[variables('hostPoolName')]",
-        "description": "[parameters('hostPoolDescription')]",
-        "customRdpProperty": "[variables('entraSsoRdpProperties')]",
-        "registrationInfo": {
-          "expirationTime": "[parameters('registrationTokenExpirationTime')]",
-          "registrationTokenOperation": "Update"
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "hostPoolName": {
+            "value": "[variables('hostPoolName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "hostPoolLoadBalancerType": {
+            "value": "[parameters('hostPoolLoadBalancerType')]"
+          },
+          "hostPoolMaximumSessionsAllowed": {
+            "value": "[parameters('hostPoolMaximumSessionsAllowed')]"
+          },
+          "hostPoolDescription": {
+            "value": "[parameters('hostPoolDescription')]"
+          },
+          "entraSsoRdpProperties": {
+            "value": "[variables('entraSsoRdpProperties')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "hostPoolName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "hostPoolLoadBalancerType": {
+              "type": "string"
+            },
+            "hostPoolMaximumSessionsAllowed": {
+              "type": "int"
+            },
+            "hostPoolDescription": {
+              "type": "string"
+            },
+            "entraSsoRdpProperties": {
+              "type": "string"
+            },
+            "registrationTokenExpirationTime": {
+              "type": "string",
+              "metadata": {
+                "description": "Hidden inner parameter. Default is 27 days from deployment time."
+              },
+              "defaultValue": "[dateTimeAdd(utcNow(), 'P27D')]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/hostPools",
+              "apiVersion": "2024-04-08-preview",
+              "name": "[parameters('hostPoolName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hostPoolType": "Pooled",
+                "loadBalancerType": "[parameters('hostPoolLoadBalancerType')]",
+                "maxSessionLimit": "[parameters('hostPoolMaximumSessionsAllowed')]",
+                "startVMOnConnect": true,
+                "validationEnvironment": false,
+                "preferredAppGroupType": "Desktop",
+                "publicNetworkAccess": "Enabled",
+                "managementType": "Standard",
+                "friendlyName": "[parameters('hostPoolName')]",
+                "description": "[parameters('hostPoolDescription')]",
+                "customRdpProperty": "[parameters('entraSsoRdpProperties')]",
+                "registrationInfo": {
+                  "expirationTime": "[parameters('registrationTokenExpirationTime')]",
+                  "registrationTokenOperation": "Update"
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -479,7 +440,7 @@
         "defaultDesktopDisplayName": "[parameters('defaultDesktopDisplayName')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DesktopVirtualization/hostPools', variables('hostPoolName'))]"
+        "[resourceId('Microsoft.Resources/deployments', variables('hostPoolDeploymentName'))]"
       ]
     },
     {
@@ -556,16 +517,16 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "[parameters('imagePublisher')]",
-            "offer": "[parameters('imageOffer')]",
-            "sku": "[parameters('imageSku')]",
-            "version": "[parameters('imageVersion')]"
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSku')]",
+            "version": "[variables('imageVersion')]"
           },
           "osDisk": {
             "name": "[format('osdisk-{0}', variables('sessionHostNames')[copyIndex()])]",
             "createOption": "FromImage",
             "caching": "ReadWrite",
-            "diskSizeGB": "[parameters('osDiskSizeGb')]",
+            "diskSizeGB": "[variables('osDiskSizeGb')]",
             "managedDisk": {
               "storageAccountType": "Premium_LRS"
             }
@@ -632,7 +593,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('sessionHostNames')[copyIndex()], 'AADLoginForWindows')]",
-        "[resourceId('Microsoft.DesktopVirtualization/hostPools', variables('hostPoolName'))]"
+        "[resourceId('Microsoft.Resources/deployments', variables('hostPoolDeploymentName'))]"
       ]
     },
     {
