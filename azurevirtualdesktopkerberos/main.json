@@ -29,27 +29,29 @@
       "type": "string",
       "metadata": {
         "description": "Entra ID group Object ID that receives AVD desktop access, Virtual Machine User Login, and Storage File Data SMB Share Contributor permissions."
-      }
+      },
+      "defaultValue": "fa65fdc8-3c24-48a2-bd56-eb2939f965f8"
     },
     "avdAdminsGroupObjectId": {
       "type": "string",
       "metadata": {
         "description": "Entra ID group Object ID that receives Virtual Machine Administrator Login and Storage File Data Privileged Contributor permissions."
-      }
+      },
+      "defaultValue": "d3216b41-c48e-478c-acc4-50d35dff57ab"
     },
     "avdServicePrincipalObjectId": {
       "type": "string",
       "metadata": {
         "description": "Optional Azure Virtual Desktop enterprise application/service principal Object ID. Fill this for Start VM on Connect RBAC. App/client ID is 9cdead84-a844-4324-93f2-b2e6bb768d07, but the object ID is tenant-specific. Leave empty to skip this role assignment."
       },
-      "defaultValue": ""
+      "defaultValue": "7ea13f1d-177a-4c0e-98a3-8ef6814a7190"
     },
     "avdComputerGroupObjectId": {
       "type": "string",
       "metadata": {
         "description": "Optional existing Entra ID computer/device group Object ID for AVD session hosts. This template only returns the value for policy targeting; it does not create or populate the group."
       },
-      "defaultValue": ""
+      "defaultValue": "07530aa4-48d1-474c-8f0c-bbae4f41808b"
     },
     "workspaceFriendlyName": {
       "type": "string",
