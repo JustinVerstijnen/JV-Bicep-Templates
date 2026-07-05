@@ -190,6 +190,7 @@
     "hostPoolName": "[format('vdhp-{0}-avd01', variables('abbreviationLower'))]",
     "applicationGroupName": "[format('vdag-{0}-avd01', variables('abbreviationLower'))]",
     "workspaceName": "[format('vdws-{0}-avd01', variables('abbreviationLower'))]",
+    "sessionHostNamePrefix": "[format('vm-{0}-sh', variables('abbreviationLower'))]",
     "entraSsoRdpProperties": "[join(createArray('targetisaadjoined:i:1','enablerdsaadauth:i:1','redirectwebauthn:i:1','audiocapturemode:i:1','audiomode:i:0','camerastoredirect:s:*','devicestoredirect:s:*','drivestoredirect:s:*','redirectclipboard:i:1','redirectcomports:i:1','redirectprinters:i:1','redirectsmartcards:i:1','screen mode id:i:2'), ';')]",
     "intuneMdmApplicationId": "0000000a-0000-0000-c000-000000000000",
     "avdServicePrincipalClientId": "9cdead84-a844-4324-93f2-b2e6bb768d07",
@@ -203,7 +204,7 @@
       {
         "name": "sessionHostNames",
         "count": "[parameters('sessionHostCount')]",
-        "input": "[format('vm-{0}-avd{1}', variables('abbreviationLower'), add(copyIndex('sessionHostNames'), 1))]"
+        "input": "[format('{0}-{1}', variables('sessionHostNamePrefix'), add(copyIndex('sessionHostNames'), 1))]"
       }
     ],
     "storageIpRuleObjects": []

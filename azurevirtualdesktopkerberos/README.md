@@ -30,9 +30,9 @@ This folder contains the Bicep and ARM version of the old Terraform Azure Virtua
 - Pooled Azure Virtual Desktop host pool: `vdhp-jv-avd01`
 - Desktop application group: `vdag-jv-avd01`
 - Workspace: `vdws-jv-avd01`
-- Session host VM(s): `vm-jv-avd1`, `vm-jv-avd2`, etc.
-- Session host NIC(s): `nic-vm-jv-avd1`, `nic-vm-jv-avd2`, etc.
-- Session host OS disk(s): `osdisk-vm-jv-avd1`, `osdisk-vm-jv-avd2`, etc.
+- Session host VM(s): `vm-jv-sh-1`, `vm-jv-sh-2`, etc.
+- Session host NIC(s): `nic-vm-jv-sh-1`, `nic-vm-jv-sh-2`, etc.
+- Session host OS disk(s): `osdisk-vm-jv-sh-1`, `osdisk-vm-jv-sh-2`, etc.
 - AVD DSC registration extension
 - Guest Attestation extension
 - RBAC assignments for AVD users, AVD admins, FSLogix storage access, and optional Start VM on Connect

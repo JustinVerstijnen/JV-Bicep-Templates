@@ -207,9 +207,9 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-01-01' = {
   tags: tags
   properties: {
     threatIntelMode: 'Alert'
-  }
-  sku: {
-    tier: firewallSkuTier
+    sku: {
+      tier: firewallSkuTier
+    }
   }
 }
 

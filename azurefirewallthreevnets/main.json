@@ -255,10 +255,10 @@
       "location": "[variables('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "threatIntelMode": "Alert"
-      },
-      "sku": {
-        "tier": "[parameters('firewallSkuTier')]"
+        "threatIntelMode": "Alert",
+        "sku": {
+          "tier": "[parameters('firewallSkuTier')]"
+        }
       }
     },
     {

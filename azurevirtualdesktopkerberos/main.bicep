@@ -87,7 +87,8 @@ var hostPoolName = 'vdhp-${abbreviationLower}-avd01'
 var applicationGroupName = 'vdag-${abbreviationLower}-avd01'
 var workspaceName = 'vdws-${abbreviationLower}-avd01'
 
-var sessionHostNames = [for index in range(0, sessionHostCount): 'vm-${abbreviationLower}-avd${index + 1}']
+var sessionHostNamePrefix = 'vm-${abbreviationLower}-sh'
+var sessionHostNames = [for index in range(0, sessionHostCount): '${sessionHostNamePrefix}-${index + 1}']
 var entraSsoRdpProperties = join([
   'targetisaadjoined:i:1'
   'enablerdsaadauth:i:1'
