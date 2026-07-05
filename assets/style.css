@@ -156,19 +156,25 @@ a { color: inherit; text-decoration: none; }
 }
 
 .tool-image-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  padding: 10px;
+  overflow: hidden;
   background: linear-gradient(135deg, rgba(142,175,218,.18), rgba(255,255,255,.45));
 }
 
 .tool-image {
   width: 100%;
-  height: 180px;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
   display: block;
+  transform: scale(.7);
   transition: transform .28s ease;
 }
 
-.tool-card:hover .tool-image { transform: scale(1.03); }
+.tool-card:hover .tool-image { transform: scale(.72); }
 
 .tool-content {
   display: flex;
