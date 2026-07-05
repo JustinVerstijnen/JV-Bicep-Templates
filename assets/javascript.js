@@ -16,21 +16,21 @@ function getDeployToAzureUrl(templatePath) {
 const tools = [
   {
     title: "Single Server with Active Directory",
-    description: "Deploy a single Windows Server VM with Active Directory Domain Services and DNS. Estimated deployment time: 5 minutes.",
+    description: "Deploy a single Windows Server VM with Active Directory Domain Services and DNS. Estimated deployment time: 10 minutes.",
     templatePath: "singleserveractivedirectory/main.json",
     shortcut: "",
     image: `${rawTemplateBaseUrl}/singleserveractivedirectory/singleserveractivedirectory.png`
   },
   {
     title: "Single Server with IIS",
-    description: "Deploy a single Windows Server VM with IIS and a default test website. Estimated deployment time: 5 minutes.",
+    description: "Deploy a single Windows Server VM with IIS and a default test website. Estimated deployment time: 10 minutes.",
     templatePath: "singleserveriis/main.json",
     shortcut: "",
     image: `${rawTemplateBaseUrl}/singleserveriis/singleserveriis.png`
   },
   {
     title: "Single Server with Active Directory and Workstation",
-    description: "Deploy a Windows Server Active Directory domain controller and a Windows 11 workstation named vm-jv-ws01. Estimated deployment time: 5 minutes.",
+    description: "Deploy a Windows Server Active Directory domain controller and a Windows 11 workstation named vm-jv-ws01. Estimated deployment time: 20 minutes.",
     templatePath: "singleserveractivedirectoryworkstation/main.json",
     shortcut: "",
     image: `${rawTemplateBaseUrl}/singleserveractivedirectoryworkstation/singleserveractivedirectoryworkstation.png`
@@ -44,7 +44,7 @@ const tools = [
   },
   {
     title: "Azure Firewall with Three VNets",
-    description: "Deploy Azure Firewall with a firewall policy, three VNets and full bidirectional VNet peering. Estimated deployment time: X minutes.",
+    description: "Deploy Azure Firewall with a firewall policy, three VNets and full bidirectional VNet peering. Estimated deployment time: 15 minutes.",
     templatePath: "azurefirewallthreevnets/main.json",
     shortcut: "",
     image: `${rawTemplateBaseUrl}/azurefirewallthreevnets/azurefirewallthreevnets.png`
