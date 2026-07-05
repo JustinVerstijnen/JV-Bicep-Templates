@@ -268,7 +268,7 @@ a { color: inherit; text-decoration: none; }
 .deploy-to-azure img {
   display: block;
   width: 100%;
-  max-width: 156px;
+  max-width: 256px;
   height: auto;
 }
 
