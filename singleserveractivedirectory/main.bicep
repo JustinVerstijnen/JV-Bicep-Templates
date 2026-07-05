@@ -49,7 +49,7 @@ var publicIpName = 'pip-${abbreviationLower}-dc01'
 var nicName = 'nic-${abbreviationLower}-dc01'
 var vmName = 'vm-${abbreviationLower}-dc01'
 var osDiskName = 'osdisk-${abbreviationLower}-dc01'
-var rdpRuleName = 'allow-rdp-from-admin-ip'
+var rdpRuleName = 'Allow-RDP-Inbound'
 
 // This command installs the AD DS role, creates a new forest, installs DNS, and schedules a restart.
 // The password is base64 encoded only to avoid quoting issues in the PowerShell command.

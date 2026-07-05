@@ -82,7 +82,7 @@
     "nicName": "[format('nic-{0}-dc01', variables('abbreviationLower'))]",
     "vmName": "[format('vm-{0}-dc01', variables('abbreviationLower'))]",
     "osDiskName": "[format('osdisk-{0}-dc01', variables('abbreviationLower'))]",
-    "rdpRuleName": "allow-rdp-from-admin-ip",
+    "rdpRuleName": "Allow-RDP-Inbound",
     "encodedDsrmPassword": "[base64(parameters('dsrmPassword'))]",
     "installAdScriptLines": [
       "$ErrorActionPreference = 'Stop'",

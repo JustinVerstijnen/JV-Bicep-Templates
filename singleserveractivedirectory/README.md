@@ -25,7 +25,7 @@ This template deploys one Windows Server Active Directory domain controller.
 
 ## Network access
 
-- `allow-rdp-from-admin-ip` allows RDP TCP/3389 only from the configured `sourceIpAddress`.
+- `Allow-RDP-Inbound` allows RDP TCP/3389 only from the configured `sourceIpAddress`.
 - VNet DNS and the VM NIC DNS setting are configured to use the domain controller private IP `10.69.0.4`.
 
 ## Outputs

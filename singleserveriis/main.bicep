@@ -20,7 +20,7 @@ param sourceIpAddress string
 @description('Server size. Required. Enter an Azure VM size, for example Standard_D2as_v5 or Standard_D2as_v7.')
 param vmSize string = 'Standard_D2as_v7'
 
-@description('Source address prefix that is allowed to access the IIS website on HTTP port 80 and HTTPS port 443. Default is Internet.')
+@description('Source address prefix that is allowed to access the IIS website on HTTPS port 443. Default is Internet.')
 param webSourceAddressPrefix string = 'Internet'
 
 @description('Tags. Optional. Add Azure resource tags as a JSON object. Leave empty if no tags are needed.')
@@ -39,7 +39,7 @@ var nicName = 'nic-${abbreviationLower}-iis01'
 var vmName = 'vm-${abbreviationLower}-iis01'
 var osDiskName = 'osdisk-${abbreviationLower}-iis01'
 var rdpRuleName = 'Allow-RDP-Inbound'
-var httpHttpsRuleName = 'Allow-HTTP-HTTPS-Inbound'
+var httpsRuleName = 'Allow-HTTPS-Inbound'
 
 // This command installs IIS and places a small default page in wwwroot.
 var installIisScriptLines = [
@@ -60,20 +60,17 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
   properties: {
     securityRules: [
       {
-        name: httpHttpsRuleName
+        name: httpsRuleName
         properties: {
           priority: 1000
           direction: 'Inbound'
           access: 'Allow'
           protocol: 'Tcp'
           sourcePortRange: '*'
-          destinationPortRanges: [
-            '80'
-            '443'
-          ]
+          destinationPortRange: '443'
           sourceAddressPrefix: webSourceAddressPrefix
           destinationAddressPrefix: '*'
-          description: 'Allow HTTP and HTTPS traffic to the IIS website.'
+          description: 'Allow HTTPS traffic to the IIS website.'
         }
       }
       {
